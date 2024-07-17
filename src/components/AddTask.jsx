@@ -1,33 +1,38 @@
-// // src/pages/CreateProjectPage.jsx
-
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
 
-function CreateProjectPage() {
+// eslint-disable-next-line react/prop-types
+function AddTask({ refreshProject, projectId }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const navigate = useNavigate();
-
   const handleSubmit = (e) => {
-    // <== ADD
+    //  <== UPDATE THE FUNCTION
     e.preventDefault();
 
+    // We need the project id when creating the new task
+    // Create an object representing the body of the POST request
+    const requestBody = { title, description, projectId };
+
     axios
-      .post(`${API_URL}/projects`, { title, description })
+      .post(`${API_URL}/tasks`, requestBody)
       .then(() => {
-        // Once the project is created navigate to Project List Page
-        navigate("/projects");
+        // Reset the state to clear the inputs
+        setTitle("");
+        setDescription("");
+
+        // Invoke the callback function coming through the props
+        // from the ProjectDetailsPage, to refresh the project details
+        refreshProject();
       })
       .catch((error) => console.log(error));
   };
 
   return (
-    <div className="CreateProjectPage">
-      <h3>Add Project</h3>
+    <div className="AddTask">
+      <h3>Add New Task</h3>
 
       <form onSubmit={handleSubmit}>
         <label>Title:</label>
@@ -37,6 +42,7 @@ function CreateProjectPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+
         <label>Description:</label>
         <textarea
           type="text"
@@ -44,10 +50,11 @@ function CreateProjectPage() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button type="submit">Submit</button>
+
+        <button type="submit">Add Task</button>
       </form>
     </div>
   );
 }
 
-export default CreateProjectPage;
+export default AddTask;

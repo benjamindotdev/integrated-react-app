@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react"; //  <== ADD
+import axios from "axios"; //  <== ADD
+import ProjectCard from "../components/ProjectCard"; //  <==  IMPORT
+import { Link } from "react-router-dom"; //  <== ADD
 
 const API_URL = "https://project-management-api-4641927fee65.herokuapp.com";
 
@@ -13,6 +14,7 @@ function ProjectListPage() {
       .then((response) => setProjects(response.data))
       .catch((error) => console.log(error));
   };
+
   useEffect(() => {
     getAllProjects();
   }, []);
@@ -22,15 +24,10 @@ function ProjectListPage() {
       <Link to="/projects/create">
         <button>Create Project</button>
       </Link>
-      {projects.map((project) => {
-        return (
-          <div className="ProjectCard card" key={project.id}>
-            <Link to={`/projects/${project.id}`}>
-              <h3>{project.title}</h3>
-            </Link>
-          </div>
-        );
-      })}
+
+      {projects.map((project) => (
+        <ProjectCard key={project.id} {...project} />
+      ))}
     </div>
   );
 }
